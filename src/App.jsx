@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
+import supabase from "./supabase";
 
 function App() {
 
@@ -171,34 +172,38 @@ useEffect(() => {
       <p>Total: ${total}</p>
 
       <button
-        onClick={() => {
+  onClick={async () => {
 
           if (carrito.length === 0) {
             alert("Agrega al menos un producto");
             return;
           }
 
-          const pedidos =
-            JSON.parse(localStorage.getItem("pedidos")) || [];
+        const { data, error } = await supabase
+  .from("pedidos")
+  .insert([
+    {
+      mesa: mesa,
+      productos: carrito,
+      estado: "Recibido"
+    }
+  ])
+  .select();
 
-          const nuevoPedido = {
-    id: Date.now(),
-    mesa: mesa,
-    productos: carrito,
-    estado: "Recibido",
-    fecha: Date.now()
-};
+console.log("DATA:", data);
+console.log("ERROR:", error);
 
-          pedidos.push(nuevoPedido);
+if (resultado.error) {
+  console.error(resultado.error);
+  alert(resultado.error.message);
+  return;
+}
 
-          localStorage.setItem(
-            "pedidos",
-            JSON.stringify(pedidos)
-          );
+alert("Pedido enviado");
 
-          setCarrito([]);
+setCarrito([]);
 
-          navigate("/pedido");
+navigate("/pedido");
 
         }}
       >
