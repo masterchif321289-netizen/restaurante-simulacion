@@ -1,6 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import Router from "./Router";
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <Router />
+);
 function App() {
 
   const [carrito, setCarrito] = useState([]);
