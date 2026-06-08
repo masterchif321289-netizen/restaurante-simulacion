@@ -90,7 +90,7 @@ const ventasTotales = pedidos.reduce(
 
   return (
     <div style={{ padding: "20px" }}>
-
+      <h1>🚀 COCINA VERCEL TEST</h1>
       <h1>👨‍🍳 Panel de Cocina</h1>
       <div
   style={{
