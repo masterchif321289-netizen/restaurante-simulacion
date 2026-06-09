@@ -208,9 +208,36 @@ function App() {
       <button
   onClick={async () => {
 
-    window.location.href = "/pedido";
+  const { data, error } =
+    await supabase
+      .from("pedidos")
+      .insert([
+        {
+          mesa: mesa,
+          productos: carrito,
+          estado: "Recibido"
+        }
+      ])
+      .select();
 
-  }}
+  console.log(data);
+  console.log(error);
+
+  if (error) {
+    alert("Error al enviar el pedido");
+    return;
+  }
+
+  const pedidoCreado = data[0];
+
+  localStorage.setItem(
+    "pedidoActual",
+    pedidoCreado.id
+  );
+
+  navigate("/pedido");
+
+}}
 >
   Enviar Pedido
 </button>
