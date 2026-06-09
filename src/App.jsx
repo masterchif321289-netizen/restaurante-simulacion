@@ -208,41 +208,6 @@ function App() {
       <button
   onClick={async () => {
 
-    alert("1");
-
-    const { data, error } =
-      await supabase
-        .from("pedidos")
-        .insert([
-          {
-            mesa: mesa,
-            productos: carrito,
-            estado: "Recibido"
-          }
-        ])
-        .select();
-
-    alert("2");
-
-    console.log(data);
-    console.log(error);
-
-    if (error) {
-      alert("ERROR");
-      return;
-    }
-
-    alert("3");
-
-    const pedidoCreado = data[0];
-
-    localStorage.setItem(
-      "pedidoActual",
-      pedidoCreado.id
-    );
-
-    alert("4");
-
     window.location.href = "/pedido";
 
   }}
