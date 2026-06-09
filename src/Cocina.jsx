@@ -6,27 +6,14 @@ function Cocina() {
   const [pedidos, setPedidos] = useState([]);
 
   const cargarPedidos = async () => {
-const recibidos = pedidos.filter(
-  (pedido) => pedido.estado === "Recibido"
-);
 
-const preparacion = pedidos.filter(
-  (pedido) => pedido.estado === "En preparación"
-);
-
-const listos = pedidos.filter(
-  (pedido) => pedido.estado === "Listo"
-);
     const { data, error } = await supabase
       .from("pedidos")
       .select("*")
       .order("id", { ascending: false });
 
     console.log("DATA:", data);
-    console.log(
-  "ERROR:",
-  JSON.stringify(error, null, 2)
-);
+    console.log("ERROR:", error);
 
     if (error) {
       console.error(error);
@@ -39,43 +26,42 @@ const listos = pedidos.filter(
 
   useEffect(() => {
 
-  cargarPedidos();
+    cargarPedidos();
 
-  const canal = supabase
-  .channel("pedidos-realtime")
-  .on(
-    "postgres_changes",
-    {
-      event: "*",
-      schema: "public",
-      table: "pedidos"
-    },
-    (payload) => {
+    const canal = supabase
+      .channel("pedidos-realtime")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "pedidos"
+        },
+        (payload) => {
 
-      console.log(
-        "EVENTO RECIBIDO:",
-        payload
-      );
+          console.log(
+            "EVENTO RECIBIDO:",
+            payload
+          );
 
-      cargarPedidos();
+          cargarPedidos();
 
-    }
-  )
-  .subscribe((status) => {
+        }
+      )
+      .subscribe((status) => {
 
-    console.log(
-      "STATUS:",
-      status
-    );
+        console.log(
+          "STATUS REALTIME:",
+          status
+        );
 
-  });
-        "STATUS REALTIME:",
-        status
-  return () => {
-    supabase.removeChannel(canal);
-  };
+      });
 
-}, []);
+    return () => {
+      supabase.removeChannel(canal);
+    };
+
+  }, []);
 
   const siguienteEstado = (estadoActual) => {
 
@@ -118,6 +104,22 @@ const listos = pedidos.filter(
 
   };
 
+  const recibidos = pedidos.filter(
+    (pedido) => pedido.estado === "Recibido"
+  );
+
+  const preparacion = pedidos.filter(
+    (pedido) => pedido.estado === "En preparación"
+  );
+
+  const listos = pedidos.filter(
+    (pedido) => pedido.estado === "Listo"
+  );
+
+  const entregados = pedidos.filter(
+    (pedido) => pedido.estado === "Entregado"
+  );
+
   return (
     <div style={{ padding: "20px" }}>
 
@@ -129,128 +131,184 @@ const listos = pedidos.filter(
 
       <div className="kanban">
 
-  <div className="columna">
+        <div className="columna">
 
-    <h2>🔵 Recibidos</h2>
+          <h2>
+            🔵 Recibidos ({recibidos.length})
+          </h2>
 
-    {recibidos.map((pedido) => (
+          {recibidos.map((pedido) => (
 
-      <div
-        key={pedido.id}
-        className="pedido-card"
-      >
+            <div
+              key={pedido.id}
+              className="pedido-card"
+            >
 
-        <h3>Pedido #{pedido.id}</h3>
+              <h3>
+                Pedido #{pedido.id}
+              </h3>
 
-        <p>Mesa {pedido.mesa}</p>
+              <p>
+                Mesa {pedido.mesa}
+              </p>
 
-        <ul>
-          {(pedido.productos || []).map(
-            (producto, index) => (
-              <li key={index}>
-                {producto.nombre}
-              </li>
-            )
-          )}
-        </ul>
+              <ul>
+                {(pedido.productos || []).map(
+                  (producto, index) => (
+                    <li key={index}>
+                      {producto.nombre}
+                    </li>
+                  )
+                )}
+              </ul>
 
-        <button
-          className="boton-estado"
-          onClick={() =>
-            actualizarEstado(pedido)
-          }
-        >
-          Preparar
-        </button>
+              <button
+                className="boton-estado"
+                onClick={() =>
+                  actualizarEstado(pedido)
+                }
+              >
+                Preparar
+              </button>
+
+            </div>
+
+          ))}
+
+        </div>
+
+        <div className="columna">
+
+          <h2>
+            🟠 En preparación ({preparacion.length})
+          </h2>
+
+          {preparacion.map((pedido) => (
+
+            <div
+              key={pedido.id}
+              className="pedido-card"
+            >
+
+              <h3>
+                Pedido #{pedido.id}
+              </h3>
+
+              <p>
+                Mesa {pedido.mesa}
+              </p>
+
+              <ul>
+                {(pedido.productos || []).map(
+                  (producto, index) => (
+                    <li key={index}>
+                      {producto.nombre}
+                    </li>
+                  )
+                )}
+              </ul>
+
+              <button
+                className="boton-estado"
+                onClick={() =>
+                  actualizarEstado(pedido)
+                }
+              >
+                Marcar listo
+              </button>
+
+            </div>
+
+          ))}
+
+        </div>
+
+        <div className="columna">
+
+          <h2>
+            🟢 Listos ({listos.length})
+          </h2>
+
+          {listos.map((pedido) => (
+
+            <div
+              key={pedido.id}
+              className="pedido-card"
+            >
+
+              <h3>
+                Pedido #{pedido.id}
+              </h3>
+
+              <p>
+                Mesa {pedido.mesa}
+              </p>
+
+              <ul>
+                {(pedido.productos || []).map(
+                  (producto, index) => (
+                    <li key={index}>
+                      {producto.nombre}
+                    </li>
+                  )
+                )}
+              </ul>
+
+              <button
+                className="boton-estado"
+                onClick={() =>
+                  actualizarEstado(pedido)
+                }
+              >
+                Entregar
+              </button>
+
+            </div>
+
+          ))}
+
+        </div>
+
+        <div className="columna">
+
+          <h2>
+            ⚫ Entregados ({entregados.length})
+          </h2>
+
+          {entregados.map((pedido) => (
+
+            <div
+              key={pedido.id}
+              className="pedido-card"
+            >
+
+              <h3>
+                Pedido #{pedido.id}
+              </h3>
+
+              <p>
+                Mesa {pedido.mesa}
+              </p>
+
+              <ul>
+                {(pedido.productos || []).map(
+                  (producto, index) => (
+                    <li key={index}>
+                      {producto.nombre}
+                    </li>
+                  )
+                )}
+              </ul>
+
+            </div>
+
+          ))}
+
+        </div>
 
       </div>
 
-    ))}
-
-  </div>
-
-  <div className="columna">
-
-    <h2>🟠 En preparación</h2>
-
-    {preparacion.map((pedido) => (
-
-      <div
-        key={pedido.id}
-        className="pedido-card"
-      >
-
-        <h3>Pedido #{pedido.id}</h3>
-
-        <p>Mesa {pedido.mesa}</p>
-
-        <ul>
-          {(pedido.productos || []).map(
-            (producto, index) => (
-              <li key={index}>
-                {producto.nombre}
-              </li>
-            )
-          )}
-        </ul>
-
-        <button
-          className="boton-estado"
-          onClick={() =>
-            actualizarEstado(pedido)
-          }
-        >
-          Marcar listo
-        </button>
-
-      </div>
-
-    ))}
-
-  </div>
-
-  <div className="columna">
-
-    <h2>🟢 Listos</h2>
-
-    {listos.map((pedido) => (
-
-      <div
-        key={pedido.id}
-        className="pedido-card"
-      >
-
-        <h3>Pedido #{pedido.id}</h3>
-
-        <p>Mesa {pedido.mesa}</p>
-
-        <ul>
-          {(pedido.productos || []).map(
-            (producto, index) => (
-              <li key={index}>
-                {producto.nombre}
-              </li>
-            )
-          )}
-        </ul>
-
-        <button
-          className="boton-estado"
-          onClick={() =>
-            actualizarEstado(pedido)
-          }
-        >
-          Entregar
-        </button>
-
-      </div>
-
-    ))}
-
-  </div>
-
-</div>
-          </div>
+    </div>
   );
 }
 
