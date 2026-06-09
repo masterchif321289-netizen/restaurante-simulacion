@@ -1,27 +1,27 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import supabase from "./supabase";
 
 function App() {
 
   const [carrito, setCarrito] = useState([]);
+  const [mesa, setMesa] = useState("");
+
   const navigate = useNavigate();
-  
-const [mesa, setMesa] = useState("");
-useEffect(() => {
 
-  const parametros =
-    new URLSearchParams(window.location.search);
+  useEffect(() => {
 
-  const mesaURL =
-    parametros.get("mesa");
+    const parametros =
+      new URLSearchParams(window.location.search);
 
-  if (mesaURL) {
-    setMesa(mesaURL);
-  }
+    const mesaURL =
+      parametros.get("mesa");
 
-}, []);
+    if (mesaURL) {
+      setMesa(mesaURL);
+    }
+
+  }, []);
 
   const productos = [
     { id: 1, nombre: "Hamburguesa", precio: 150 },
@@ -37,7 +37,8 @@ useEffect(() => {
   const quitarProducto = (nombreProducto) => {
 
     const indice = carrito.findIndex(
-      (producto) => producto.nombre === nombreProducto
+      (producto) =>
+        producto.nombre === nombreProducto
     );
 
     if (indice === -1) return;
@@ -56,37 +57,48 @@ useEffect(() => {
     productos.forEach((producto) => {
 
       if (agrupados[producto.nombre]) {
+
         agrupados[producto.nombre].cantidad++;
+
       } else {
+
         agrupados[producto.nombre] = {
           ...producto,
           cantidad: 1
         };
+
       }
 
     });
 
     return Object.values(agrupados);
+
   };
 
   const total = carrito.reduce(
-    (acumulado, producto) => acumulado + producto.precio,
+    (acumulado, producto) =>
+      acumulado + producto.precio,
     0
   );
-      if (!mesa) {
-  return (
-    <div style={{ padding: "20px" }}>
-      <h1>🍽 Restaurante XYZ</h1>
 
-      <h2>
-        Escanee el código QR de una mesa
-      </h2>
-      <p>
-        No se detectó ninguna mesa válida.
-      </p>
-    </div>
-  );
-}
+  if (!mesa) {
+
+    return (
+      <div style={{ padding: "20px" }}>
+        <h1>🍽 Restaurante XYZ</h1>
+
+        <h2>
+          Escanee el código QR de una mesa
+        </h2>
+
+        <p>
+          No se detectó ninguna mesa válida.
+        </p>
+      </div>
+    );
+
+  }
+
   return (
     <div style={{ padding: "20px" }}>
 
@@ -95,6 +107,7 @@ useEffect(() => {
       <h3>Menú</h3>
 
       {productos.map((producto) => (
+
         <div
           key={producto.id}
           style={{
@@ -103,107 +116,142 @@ useEffect(() => {
             marginBottom: "10px"
           }}
         >
+
           <h3>{producto.nombre}</h3>
 
           <p>${producto.precio}</p>
 
           <button
-            onClick={() => agregarProducto(producto)}
+            onClick={() =>
+              agregarProducto(producto)
+            }
           >
             Agregar
           </button>
 
         </div>
+
       ))}
 
       <hr />
-<h2>🪑 Mesa</h2>
 
-<input
-  value={mesa}
-  readOnly
-/>
+      <h2>🪑 Mesa</h2>
+
+      <input
+        value={mesa}
+        readOnly
+      />
+
       <h2>🛒 Carrito</h2>
 
-      <p>Productos: {carrito.length}</p>
+      <p>
+        Productos: {carrito.length}
+      </p>
 
       <ul>
-        {agruparProductos(carrito).map((producto) => (
-          <li key={producto.id}>
 
-            <strong>{producto.nombre}</strong>
+        {agruparProductos(carrito).map(
+          (producto) => (
 
-            <div style={{ marginTop: "5px" }}>
+            <li key={producto.id}>
 
-              <button
-                onClick={() =>
-                  quitarProducto(producto.nombre)
-                }
-              >
-                ➖
-              </button>
+              <strong>
+                {producto.nombre}
+              </strong>
 
-              <span
+              <div
                 style={{
-                  margin: "0 10px",
-                  fontWeight: "bold"
+                  marginTop: "5px"
                 }}
               >
-                {producto.cantidad}
-              </span>
 
-              <button
-                onClick={() =>
-                  agregarProducto(producto)
-                }
-              >
-                ➕
-              </button>
+                <button
+                  onClick={() =>
+                    quitarProducto(
+                      producto.nombre
+                    )
+                  }
+                >
+                  ➖
+                </button>
 
-            </div>
+                <span
+                  style={{
+                    margin: "0 10px",
+                    fontWeight: "bold"
+                  }}
+                >
+                  {producto.cantidad}
+                </span>
 
-          </li>
-        ))}
+                <button
+                  onClick={() =>
+                    agregarProducto(producto)
+                  }
+                >
+                  ➕
+                </button>
+
+              </div>
+
+            </li>
+
+          )
+        )}
+
       </ul>
 
-      <p>Total: ${total}</p>
+      <p>
+        Total: ${total}
+      </p>
 
       <button
-  onClick={async () => {
+        onClick={async () => {
 
           if (carrito.length === 0) {
-            alert("Agrega al menos un producto");
+
+            alert(
+              "Agrega al menos un producto"
+            );
+
             return;
           }
 
-        const { data, error } = await supabase
-  .from("pedidos")
-  .insert([
-    {
-      mesa: mesa,
-      productos: carrito,
-      estado: "Recibido"
-    }
-  ])
-  .select();
+          const { data, error } =
+            await supabase
+              .from("pedidos")
+              .insert([
+                {
+                  mesa: mesa,
+                  productos: carrito,
+                  estado: "Recibido"
+                }
+              ])
+              .select();
 
-console.log("DATA:", data);
-console.log("ERROR:", error);
+          if (error) {
 
-if (error) {
-  alert(error.message);
-}
-if (resultado.error) {
-  console.error(resultado.error);
-  alert(resultado.error.message);
-  return;
-}
+            console.error(error);
 
-alert("Pedido enviado");
+            alert(error.message);
 
-setCarrito([]);
+            return;
+          }
 
-navigate("/pedido");
+          const pedidoCreado = data[0];
+
+          localStorage.setItem(
+            "pedidoActual",
+            pedidoCreado.id
+          );
+
+          alert(
+            "Pedido enviado correctamente"
+          );
+
+          setCarrito([]);
+
+          navigate("/pedido");
 
         }}
       >

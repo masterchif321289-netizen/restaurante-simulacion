@@ -7,29 +7,35 @@ function EstadoPedido() {
 
   useEffect(() => {
 
-    const cargarUltimoPedido = async () => {
+    const pedidoId =
+      localStorage.getItem("pedidoActual");
+
+    if (!pedidoId) {
+      return;
+    }
+
+    const cargarPedido = async () => {
 
       const { data, error } = await supabase
-        .from("pedidos")
-        .select("*")
-        .order("id", { ascending: false })
-        .limit(1);
+  .from("pedidos")
+  .update({
+    estado: nuevoEstado
+  })
+  .eq("id", pedido.id);
 
       if (error) {
         console.error(error);
         return;
       }
 
-      if (data && data.length > 0) {
-        setPedido(data[0]);
-      }
+      setPedido(data);
 
     };
 
-    cargarUltimoPedido();
+    cargarPedido();
 
     const canal = supabase
-      .channel("estado-pedido")
+      .channel(`pedido-${pedidoId}`)
       .on(
         "postgres_changes",
         {
@@ -37,8 +43,15 @@ function EstadoPedido() {
           schema: "public",
           table: "pedidos"
         },
-        () => {
-          cargarUltimoPedido();
+        (payload) => {
+
+          if (
+            payload.new &&
+            payload.new.id === Number(pedidoId)
+          ) {
+            setPedido(payload.new);
+          }
+
         }
       )
       .subscribe();
@@ -50,7 +63,7 @@ function EstadoPedido() {
   }, []);
 
   if (!pedido) {
-    return <h2>No hay pedidos</h2>;
+    return <h2>No hay pedidos activos</h2>;
   }
 
   const agruparProductos = (productos) => {
@@ -79,7 +92,8 @@ function EstadoPedido() {
   };
 
   const total = (pedido.productos || []).reduce(
-    (sum, producto) => sum + producto.precio,
+    (sum, producto) =>
+      sum + Number(producto.precio || 0),
     0
   );
 
@@ -91,10 +105,10 @@ function EstadoPedido() {
       </h1>
 
       <h3>
-        Mesa {pedido.mesa}
+        🪑 Mesa {pedido.mesa}
       </h3>
 
-      <h2>🍳 Estado</h2>
+      <h2>🍳 Estado del Pedido</h2>
 
       <p
         style={{
@@ -120,8 +134,10 @@ function EstadoPedido() {
       <ul>
         {agruparProductos(
           pedido.productos
-        ).map((producto) => (
-          <li key={`${producto.id}-${producto.nombre}`}>
+        ).map((producto, index) => (
+          <li
+            key={`${producto.nombre}-${index}`}
+          >
             {producto.cantidad}x {producto.nombre}
           </li>
         ))}
