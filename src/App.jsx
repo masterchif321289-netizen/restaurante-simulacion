@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import supabase from "./supabase";
-
+import "./App.css";
 function App() {
 
   const [carrito, setCarrito] = useState([]);

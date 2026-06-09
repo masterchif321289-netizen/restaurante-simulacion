@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import supabase from "./supabase";
-
+import "./App.css";
 function Cocina() {
 
   const [pedidos, setPedidos] = useState([]);
