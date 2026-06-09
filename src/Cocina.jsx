@@ -45,9 +45,8 @@ function Cocina() {
     }
   )
   .subscribe((status) => {
-    console.log("ESTADO CANAL:", status);
-  });
-
+  console.log("STATUS:", status);
+});
     return () => {
       supabase.removeChannel(canal);
     };
