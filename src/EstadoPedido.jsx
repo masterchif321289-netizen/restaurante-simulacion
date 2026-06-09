@@ -108,10 +108,10 @@ function EstadoPedido() {
       </h1>
 
       <h3>
-        🪑 Mesa {pedido.mesa}
+       Mesa {pedido.mesa}
       </h3>
 
-      <h2>🍳 Estado del Pedido</h2>
+      <h2> Estado del Pedido</h2>
 
       <p
   className={`estado ${
@@ -129,7 +129,7 @@ function EstadoPedido() {
 
       <hr />
 
-      <h2>📋 Productos</h2>
+      <h2> Productos</h2>
 
       <ul>
         {agruparProductos(
@@ -145,7 +145,7 @@ function EstadoPedido() {
 
       <hr />
 
-      <h2>💵 Total</h2>
+      <h2> Total</h2>
 
       <p
         style={{
