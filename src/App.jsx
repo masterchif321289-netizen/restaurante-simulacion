@@ -85,7 +85,7 @@ function App() {
 
     return (
       <div style={{ padding: "20px" }}>
-        <h1>🍽 Restaurante XYZ</h1>
+        <h1>🍽 Restaurante "Los antojitos"</h1>
 
         <h2>
           Escanee el código QR de una mesa
