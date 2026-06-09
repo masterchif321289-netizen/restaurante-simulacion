@@ -41,12 +41,23 @@ function Cocina() {
       table: "pedidos"
     },
     (payload) => {
-      console.log("EVENTO RECIBIDO:", payload);
+
+      console.log(
+        "EVENTO RECIBIDO:",
+        payload
+      );
+
       cargarPedidos();
+
     }
   )
   .subscribe((status) => {
-    console.log("STATUS:", status);
+
+    console.log(
+      "STATUS:",
+      status
+    );
+
   });
         "STATUS REALTIME:",
         status
