@@ -22,7 +22,7 @@ const entregados = pedidos.filter(
 const ventasTotales = pedidos.reduce(
   (total, pedido) =>
     total +
-    pedido.productos.reduce(
+    (pedido.productos || []).reduce(
       (subtotal, producto) =>
         subtotal + producto.precio,
       0
@@ -40,7 +40,46 @@ const ventasTotales = pedidos.reduce(
 
     };
 
-    actualizar();
+    actualizar();useEffect(() => {
+
+  const cargarPedidos = async () => {
+
+    const { data, error } = await supabase
+      .from("pedidos")
+      .select("*")
+      .order("id", { ascending: false });
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    setPedidos(data);
+
+  };
+
+  cargarPedidos();
+
+  const canal = supabase
+    .channel("pedidos-realtime")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "pedidos"
+      },
+      () => {
+        cargarPedidos();
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(canal);
+  };
+
+}, []);
 
     const intervalo =
       setInterval(actualizar, 500);
@@ -53,7 +92,7 @@ const ventasTotales = pedidos.reduce(
 
     const agrupados = {};
 
-    productos.forEach((producto) => {
+    (productos || []).forEach((producto) => {
 
       if (agrupados[producto.nombre]) {
         agrupados[producto.nombre].cantidad++;
@@ -162,38 +201,19 @@ const ventasTotales = pedidos.reduce(
             <button
               onClick={() => {
 
-                const cargarPedidos = async () => {
-  const { data, error } = await supabase
-    .from("pedidos")
-    .select("*")
-    .order("id", { ascending: false });
+                const nuevoEstado =
+  siguienteEstado(pedido.estado);
 
-  if (error) {
-    console.error(error);
-    return;
-  }
+const { error } = await supabase
+  .from("pedidos")
+  .update({
+    estado: nuevoEstado
+  })
+  .eq("id", pedido.id);
 
-  setPedidos(data);
-};
-
-                const nuevosPedidos =
-                  pedidosGuardados.map((p) =>
-                    p.id === pedido.id
-                      ? {
-                          ...p,
-                          estado: siguienteEstado(
-                            p.estado
-                          )
-                        }
-                      : p
-                  );
-
-                localStorage.setItem(
-                  "pedidos",
-                  JSON.stringify(nuevosPedidos)
-                );
-
-                setPedidos(nuevosPedidos);
+if (error) {
+  console.error(error);
+}
 
               }}
             >
@@ -210,14 +230,21 @@ const ventasTotales = pedidos.reduce(
 
       <hr />
 
-      <button
-        onClick={() => {
-          localStorage.removeItem("pedidos");
-          setPedidos([]);
-        }}
-      >
-        Limpiar pedidos
-      </button>
+      onClick={async () => {
+
+  const { error } = await supabase
+    .from("pedidos")
+    .delete()
+    .neq("id", 0);
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  setPedidos([]);
+
+}}
 
     </div>
   );
