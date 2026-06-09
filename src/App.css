@@ -1,6 +1,6 @@
 
 /* =========================
-   BASE
+   BASE PREMIUM
 ========================= */
 
 * {
@@ -11,8 +11,8 @@
 }
 
 body {
-  background: linear-gradient(135deg, #f8fafc, #eef2ff);
-  color: #111827;
+  background: radial-gradient(circle at top, #eef2ff, #f8fafc);
+  color: #0f172a;
 }
 
 /* =========================
@@ -21,122 +21,156 @@ body {
 
 h1 {
   text-align: center;
-  font-size: 30px;
-  font-weight: 800;
-  color: #1e293b;
-  margin-bottom: 10px;
+  font-size: 34px;
+  font-weight: 900;
+  color: #1e1b4b;
+  margin-bottom: 6px;
+  letter-spacing: -0.5px;
 }
 
-h3, h2 {
+h2, h3 {
   color: #334155;
-  margin-top: 18px;
 }
 
 /* =========================
-   CONTENEDOR
+   LAYOUT GENERAL
 ========================= */
 
 .container {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: auto;
   padding: 24px;
 }
 
 /* =========================
-   PRODUCTOS
+   GLASS CARD (BASE UI)
+========================= */
+
+.card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* =========================
+   PRODUCTOS (MENU)
 ========================= */
 
 .producto-card {
   background: white;
-  border-radius: 18px;
-  padding: 18px;
+  border-radius: 20px;
+  padding: 16px;
   margin-bottom: 14px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
   border-left: 6px solid #6366f1;
   transition: 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.producto-card::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 120px;
+  height: 120px;
+  background: #6366f1;
+  opacity: 0.08;
+  border-radius: 50%;
 }
 
 .producto-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.12);
 }
 
 .producto-card h3 {
-  color: #1e293b;
+  font-size: 18px;
+  font-weight: 800;
 }
 
 .producto-card p {
   color: #6366f1;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 18px;
 }
 
 /* =========================
-   BOTONES
+   BOTONES PREMIUM
 ========================= */
 
 button {
   border: none;
   cursor: pointer;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 10px 14px;
   font-weight: 700;
-  transition: 0.2s;
+  transition: 0.2s ease;
 }
 
 button:hover {
-  transform: scale(1.05);
+  transform: scale(1.06);
 }
 
-/* botón azul principal */
+button:active {
+  transform: scale(0.96);
+}
+
+/* principal */
 button.primary {
-  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  background: linear-gradient(135deg, #4f46e5, #2563eb);
   color: white;
   width: 100%;
   padding: 14px;
+  box-shadow: 0 8px 20px rgba(79,70,229,0.3);
 }
 
-/* botón verde */
+/* success */
 button.success {
   background: linear-gradient(135deg, #22c55e, #16a34a);
   color: white;
+  box-shadow: 0 8px 20px rgba(34,197,94,0.3);
 }
 
 /* =========================
-   CARRITO
+   CARRITO FLOTANTE (PRO UI)
 ========================= */
 
 .carrito {
   position: sticky;
   bottom: 20px;
-  margin-top: 25px;
-  background: white;
+  margin-top: 30px;
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 22px;
   padding: 20px;
-  border-radius: 20px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
-  border: 1px solid #e2e8f0;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+  border: 1px solid rgba(99,102,241,0.15);
 }
 
 .carrito li {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   padding: 8px 0;
 }
 
 .carrito button {
-  background: #e0e7ff;
-  color: #1e293b;
+  background: #eef2ff;
+  color: #1e1b4b;
   padding: 6px 10px;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
 /* =========================
-   TOTAL
+   TOTAL DESTACADO
 ========================= */
 
 .total {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 900;
   color: #16a34a;
   margin-top: 12px;
@@ -147,23 +181,25 @@ button.success {
 ========================= */
 
 input {
-  padding: 10px;
-  border-radius: 12px;
+  padding: 12px;
+  border-radius: 14px;
   border: 1px solid #c7d2fe;
   width: 100%;
   margin-top: 6px;
-  background: #f8fafc;
+  background: rgba(248,250,252,0.8);
+  outline: none;
 }
 
 /* =========================
-   ESTADOS
+   ESTADOS (PILL UI)
 ========================= */
 
 .estado {
   padding: 6px 14px;
   border-radius: 999px;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 12px;
+  display: inline-block;
 }
 
 .recibido {
@@ -187,7 +223,7 @@ input {
 }
 
 /* =========================
-   KANBAN
+   KANBAN PRO
 ========================= */
 
 .kanban {
@@ -198,26 +234,27 @@ input {
 }
 
 .columna {
-  background: linear-gradient(180deg, #ffffff, #f1f5f9);
-  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+  border-radius: 20px;
   padding: 14px;
-  min-height: 420px;
+  min-height: 450px;
   border: 1px solid #e2e8f0;
 }
 
 .columna h2 {
   text-align: center;
-  color: #475569;
+  font-weight: 800;
+  color: #334155;
 }
 
-/* pedidos */
+/* pedido card PRO */
 .pedido-card {
   background: white;
-  border-radius: 14px;
-  padding: 12px;
+  border-radius: 16px;
+  padding: 14px;
   margin-bottom: 12px;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
-  border-left: 5px solid #6366f1;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+  border-left: 5px solid #4f46e5;
 }
 
 /* =========================
