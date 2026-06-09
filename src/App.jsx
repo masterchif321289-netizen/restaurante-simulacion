@@ -81,9 +81,6 @@ useEffect(() => {
       <h2>
         Escanee el código QR de una mesa
       </h2>
-<button onClick={() => navigate("/cocina")}>
-  Ir a Cocina
-</button>
       <p>
         No se detectó ninguna mesa válida.
       </p>
