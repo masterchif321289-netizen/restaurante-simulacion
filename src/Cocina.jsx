@@ -29,30 +29,42 @@ function Cocina() {
 
   useEffect(() => {
 
-    cargarPedidos();
+  cargarPedidos();
 
-    const canal = supabase
-  .channel("debug")
-  .on(
-  "postgres_changes",
-  {
-    event: "*",
-    schema: "public",
-    table: "pedidos"
-  },
-  (payload) => {
-    console.log("EVENTO:", payload);
-    cargarPedidos();
-  }
-)
-  .subscribe((status) => {
-  console.log("STATUS:", status);
-});
-    return () => {
-      supabase.removeChannel(canal);
-    };
+  const canal = supabase
+    .channel("pedidos-realtime")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "pedidos"
+      },
+      (payload) => {
 
-  }, []);
+        console.log(
+          "EVENTO REALTIME:",
+          payload
+        );
+
+        cargarPedidos();
+
+      }
+    )
+    .subscribe((status) => {
+
+      console.log(
+        "STATUS REALTIME:",
+        status
+      );
+
+    });
+
+  return () => {
+    supabase.removeChannel(canal);
+  };
+
+}, []);
 
   const siguienteEstado = (estadoActual) => {
 
