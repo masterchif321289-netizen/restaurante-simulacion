@@ -4,7 +4,7 @@ const supabaseUrl =
   "https://pcemnrwodchdqoroxgyx.supabase.co";
 
 const supabaseKey =
-  "sb_publishable_FdL1a-7L5kOCSgO5kTvgwA_W9x_i9Jr";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBjZW1ucndvZGNoZHFvcm94Z3l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5NTE3MTAsImV4cCI6MjA5NjUyNzcxMH0.eB4h3-OkXPSIop4_vrftul-VTM3jjnlFgqYHKF8HXzE";
 
 const supabase = createClient(
   supabaseUrl,

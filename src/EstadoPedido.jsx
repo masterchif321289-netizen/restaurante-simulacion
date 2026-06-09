@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import supabase from "../supabase";
 
 function EstadoPedido() {
 
@@ -6,25 +7,45 @@ function EstadoPedido() {
 
   useEffect(() => {
 
-    const actualizar = () => {
+    const cargarUltimoPedido = async () => {
 
-      const pedidos =
-        JSON.parse(localStorage.getItem("pedidos")) || [];
+      const { data, error } = await supabase
+        .from("pedidos")
+        .select("*")
+        .order("id", { ascending: false })
+        .limit(1);
 
-      if (pedidos.length > 0) {
-        setPedido(pedidos[pedidos.length - 1]);
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      if (data && data.length > 0) {
+        setPedido(data[0]);
       }
 
     };
 
-    actualizar();
+    cargarUltimoPedido();
 
-    const intervalo = setInterval(
-      actualizar,
-      500
-    );
+    const canal = supabase
+      .channel("estado-pedido")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "pedidos"
+        },
+        () => {
+          cargarUltimoPedido();
+        }
+      )
+      .subscribe();
 
-    return () => clearInterval(intervalo);
+    return () => {
+      supabase.removeChannel(canal);
+    };
 
   }, []);
 
@@ -36,23 +57,28 @@ function EstadoPedido() {
 
     const agrupados = {};
 
-    productos.forEach((producto) => {
+    (productos || []).forEach((producto) => {
 
       if (agrupados[producto.nombre]) {
+
         agrupados[producto.nombre].cantidad++;
+
       } else {
+
         agrupados[producto.nombre] = {
           ...producto,
           cantidad: 1
         };
+
       }
 
     });
 
     return Object.values(agrupados);
+
   };
 
-  const total = pedido.productos.reduce(
+  const total = (pedido.productos || []).reduce(
     (sum, producto) => sum + producto.precio,
     0
   );
@@ -63,17 +89,23 @@ function EstadoPedido() {
       <h1>
         Pedido #{pedido.id}
       </h1>
+
       <h3>
-      Mesa {pedido.mesa}
+        Mesa {pedido.mesa}
       </h3>
+
       <h2>🍳 Estado</h2>
 
       <p
         style={{
           color:
-            pedido.estado === "Listo"
+            pedido.estado === "Entregado"
+              ? "gray"
+              : pedido.estado === "Listo"
               ? "green"
-              : "orange",
+              : pedido.estado === "En preparación"
+              ? "orange"
+              : "blue",
           fontWeight: "bold",
           fontSize: "24px"
         }}
@@ -86,13 +118,13 @@ function EstadoPedido() {
       <h2>📋 Productos</h2>
 
       <ul>
-        {agruparProductos(pedido.productos).map(
-          (producto) => (
-            <li key={producto.id}>
-              {producto.cantidad}x {producto.nombre}
-            </li>
-          )
-        )}
+        {agruparProductos(
+          pedido.productos
+        ).map((producto) => (
+          <li key={`${producto.id}-${producto.nombre}`}>
+            {producto.cantidad}x {producto.nombre}
+          </li>
+        ))}
       </ul>
 
       <hr />

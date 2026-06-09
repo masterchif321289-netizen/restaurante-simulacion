@@ -193,6 +193,9 @@ useEffect(() => {
 console.log("DATA:", data);
 console.log("ERROR:", error);
 
+if (error) {
+  alert(error.message);
+}
 if (resultado.error) {
   console.error(resultado.error);
   alert(resultado.error.message);

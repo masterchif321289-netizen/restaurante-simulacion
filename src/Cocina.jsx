@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import supabase from "../supabase";
 function Cocina() {
 
   const [pedidos, setPedidos] = useState([]);
@@ -162,10 +162,19 @@ const ventasTotales = pedidos.reduce(
             <button
               onClick={() => {
 
-                const pedidosGuardados =
-                  JSON.parse(
-                    localStorage.getItem("pedidos")
-                  ) || [];
+                const cargarPedidos = async () => {
+  const { data, error } = await supabase
+    .from("pedidos")
+    .select("*")
+    .order("id", { ascending: false });
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  setPedidos(data);
+};
 
                 const nuevosPedidos =
                   pedidosGuardados.map((p) =>
