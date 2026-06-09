@@ -140,7 +140,7 @@ function Cocina() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>👨‍🍳 Panel de Cocina</h1>
+      <h1>Cocina</h1>
 
       <div
         style={{
@@ -150,7 +150,7 @@ function Cocina() {
           borderRadius: "10px",
         }}
       >
-        <h2>📊 Estadísticas</h2>
+        <h2> Pedidos </h2>
 
         <p>🔵 Recibidos: {recibidos}</p>
         <p>🟠 En preparación: {preparando}</p>
@@ -160,7 +160,7 @@ function Cocina() {
         <hr />
 
         <h3>
-          💵 Ventas Totales: ${ventasTotales}
+      Ventas Totales: ${ventasTotales}
         </h3>
       </div>
 
@@ -180,7 +180,7 @@ function Cocina() {
             <h3>Pedido #{pedido.id}</h3>
 
             <p>
-              🪑 Mesa {pedido.mesa}
+               Mesa {pedido.mesa}
             </p>
 
             <ul>

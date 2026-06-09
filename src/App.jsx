@@ -135,14 +135,14 @@ function App() {
 
       <hr />
 
-      <h2>🪑 Mesa</h2>
+      <h2> Mesa</h2>
 
       <input
         value={mesa}
         readOnly
       />
 
-      <h2>🛒 Carrito</h2>
+      <h2> Carrito</h2>
 
       <p>
         Productos: {carrito.length}
