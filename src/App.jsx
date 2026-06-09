@@ -251,7 +251,7 @@ function App() {
 
           setCarrito([]);
 
-          navigate("/pedido");
+          window.location.href = "/pedido";
 
         }}
       >
