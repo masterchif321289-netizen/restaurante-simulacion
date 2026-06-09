@@ -2,25 +2,17 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import supabase from "./supabase";
 import "./App.css";
-function App() {
 
+function App() {
   const [carrito, setCarrito] = useState([]);
   const [mesa, setMesa] = useState("");
 
   const navigate = useNavigate();
 
   useEffect(() => {
-
-    const parametros =
-      new URLSearchParams(window.location.search);
-
-    const mesaURL =
-      parametros.get("mesa");
-
-    if (mesaURL) {
-      setMesa(mesaURL);
-    }
-
+    const parametros = new URLSearchParams(window.location.search);
+    const mesaURL = parametros.get("mesa");
+    if (mesaURL) setMesa(mesaURL);
   }, []);
 
   const productos = [
@@ -35,213 +27,124 @@ function App() {
   };
 
   const quitarProducto = (nombreProducto) => {
+    const index = carrito.findIndex(p => p.nombre === nombreProducto);
+    if (index === -1) return;
 
-    const indice = carrito.findIndex(
-      (producto) =>
-        producto.nombre === nombreProducto
-    );
-
-    if (indice === -1) return;
-
-    const nuevoCarrito = [...carrito];
-
-    nuevoCarrito.splice(indice, 1);
-
-    setCarrito(nuevoCarrito);
+    const nuevo = [...carrito];
+    nuevo.splice(index, 1);
+    setCarrito(nuevo);
   };
 
   const agruparProductos = (productos) => {
-
     const agrupados = {};
-
-    productos.forEach((producto) => {
-
-      if (agrupados[producto.nombre]) {
-
-        agrupados[producto.nombre].cantidad++;
-
+    productos.forEach((p) => {
+      if (agrupados[p.nombre]) {
+        agrupados[p.nombre].cantidad++;
       } else {
-
-        agrupados[producto.nombre] = {
-          ...producto,
-          cantidad: 1
-        };
-
+        agrupados[p.nombre] = { ...p, cantidad: 1 };
       }
-
     });
-
     return Object.values(agrupados);
-
   };
 
-  const total = carrito.reduce(
-    (acumulado, producto) =>
-      acumulado + producto.precio,
-    0
-  );
+  const total = carrito.reduce((acc, p) => acc + p.precio, 0);
 
   if (!mesa) {
-
     return (
-      <div style={{ padding: "20px" }}>
-        <h1>🍽 Restaurante "Los antojitos"</h1>
+      <div className="container">
+        <h1>🍽 Restaurante Los Antojitos</h1>
 
-        <h2>
-          Escanee el código QR de una mesa
-        </h2>
-
-        <p>
-          No se detectó ninguna mesa válida.
-        </p>
+        <div className="card">
+          <h2>Escanea tu código QR</h2>
+          <p>No se detectó ninguna mesa válida.</p>
+        </div>
       </div>
     );
-
   }
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div className="container">
 
-      <h1>🍽 Restaurante "Los antojitos"</h1>
+      {/* HEADER */}
+      <h1>🍽 Los Antojitos</h1>
+      <h3>Mesa: <span className="estado recibido">{mesa}</span></h3>
 
-      <h3>Menú</h3>
+      {/* MENÚ */}
+      <h2>Menú</h2>
 
       {productos.map((producto) => (
-
-        <div
-          key={producto.id}
-          style={{
-            border: "1px solid gray",
-            padding: "10px",
-            marginBottom: "10px"
-          }}
-        >
+        <div key={producto.id} className="producto-card">
 
           <h3>{producto.nombre}</h3>
-
           <p>${producto.precio}</p>
 
           <button
-            onClick={() =>
-              agregarProducto(producto)
-            }
+            className="primary"
+            onClick={() => agregarProducto(producto)}
           >
-            Agregar
+            ➕ Agregar
           </button>
 
         </div>
-
       ))}
 
-      <hr />
+      {/* CARRITO */}
+      <div className="carrito">
 
-      <h2> Mesa</h2>
+        <h2>🛒 Carrito</h2>
+        <p><strong>{carrito.length}</strong> productos</p>
 
-      <input
-        value={mesa}
-        readOnly
-      />
-
-      <h2> Carrito</h2>
-
-      <p>
-        Productos: {carrito.length}
-      </p>
-
-      <ul>
-
-        {agruparProductos(carrito).map(
-          (producto) => (
-
+        <ul>
+          {agruparProductos(carrito).map((producto) => (
             <li key={producto.id}>
+              <strong>{producto.nombre}</strong>
 
-              <strong>
-                {producto.nombre}
-              </strong>
-
-              <div
-                style={{
-                  marginTop: "5px"
-                }}
-              >
-
-                <button
-                  onClick={() =>
-                    quitarProducto(
-                      producto.nombre
-                    )
-                  }
-                >
+              <div>
+                <button onClick={() => quitarProducto(producto.nombre)}>
                   ➖
                 </button>
 
-                <span
-                  style={{
-                    margin: "0 10px",
-                    fontWeight: "bold"
-                  }}
-                >
+                <span style={{ margin: "0 10px", fontWeight: "bold" }}>
                   {producto.cantidad}
                 </span>
 
-                <button
-                  onClick={() =>
-                    agregarProducto(producto)
-                  }
-                >
+                <button onClick={() => agregarProducto(producto)}>
                   ➕
                 </button>
-
               </div>
-
             </li>
+          ))}
+        </ul>
 
-          )
-        )}
+        <h3 className="total">Total: ${total}</h3>
 
-      </ul>
+        <button
+          className="success"
+          onClick={async () => {
+            const { data, error } = await supabase
+              .from("pedidos")
+              .insert([
+                {
+                  mesa,
+                  productos: carrito,
+                  estado: "Recibido"
+                }
+              ])
+              .select();
 
-      <p>
-        Total: ${total}
-      </p>
+            if (error) {
+              alert("Error al enviar el pedido");
+              return;
+            }
 
-      <button
-  onClick={async () => {
+            localStorage.setItem("pedidoActual", data[0].id);
+            navigate("/pedido");
+          }}
+        >
+        Enviar Pedido
+        </button>
 
-  const { data, error } =
-    await supabase
-      .from("pedidos")
-      .insert([
-        {
-          mesa: mesa,
-          productos: carrito,
-          estado: "Recibido"
-        }
-      ])
-      .select();
-
-  console.log(data);
-  console.log(error);
-
-  if (error) {
-    alert("Error al enviar el pedido");
-    return;
-  }
-
-  const pedidoCreado = data[0];
-
-  localStorage.setItem(
-    "pedidoActual",
-    pedidoCreado.id
-  );
-
-  navigate("/pedido");
-
-}}
->
-  Enviar Pedido
-</button>
-
+      </div>
     </div>
   );
 }
