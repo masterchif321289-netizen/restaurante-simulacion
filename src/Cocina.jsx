@@ -83,44 +83,44 @@ function Cocina() {
 
   };
 
-  const actualizarEstado = async (pedido) => {
+const actualizarEstado = async (pedido) => {
 
-    const nuevoEstado =
-      siguienteEstado(pedido.estado);
+  const nuevoEstado =
+    siguienteEstado(pedido.estado);
 
-    const { error } = await supabase
-      .from("pedidos")
-      .update({
-        estado: nuevoEstado
-      })
-      .eq("id", pedido.id);
+  const { error } = await supabase
+    .from("pedidos")
+    .update({
+      estado: nuevoEstado
+    })
+    .eq("id", pedido.id);
 
-    if (error) {
-      console.error(error);
-      return;
-    }
+  if (error) {
+    console.error(error);
+    return;
+  }
 
-    cargarPedidos();
+  cargarPedidos();
 
-  };
+};
 
-  const recibidos = pedidos.filter(
-    (pedido) => pedido.estado === "Recibido"
-  );
+const recibidos = pedidos.filter(
+  (pedido) => pedido.estado === "Recibido"
+);
 
-  const preparacion = pedidos.filter(
-    (pedido) => pedido.estado === "En preparación"
-  );
+const preparacion = pedidos.filter(
+  (pedido) => pedido.estado === "En preparación"
+);
 
-  const listos = pedidos.filter(
-    (pedido) => pedido.estado === "Listo"
-  );
+const listos = pedidos.filter(
+  (pedido) => pedido.estado === "Listo"
+);
 
-  const entregados = pedidos.filter(
-    (pedido) => pedido.estado === "Entregado"
-  );
+const entregados = pedidos.filter(
+  (pedido) => pedido.estado === "Entregado"
+);
 
-  return (
+return (
     <div style={{ padding: "20px" }}>
 
       <h1>👨‍🍳 Cocina</h1>
