@@ -34,16 +34,17 @@ function Cocina() {
     const canal = supabase
   .channel("debug")
   .on(
-    "postgres_changes",
-    {
-      event: "*",
-      schema: "public",
-      table: "pedidos"
-    },
-    (payload) => {
-      console.log("EVENTO RECIBIDO:", payload);
-    }
-  )
+  "postgres_changes",
+  {
+    event: "*",
+    schema: "public",
+    table: "pedidos"
+  },
+  (payload) => {
+    console.log("EVENTO:", payload);
+    cargarPedidos();
+  }
+)
   .subscribe((status) => {
   console.log("STATUS:", status);
 });
