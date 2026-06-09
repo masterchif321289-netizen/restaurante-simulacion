@@ -123,7 +123,7 @@ const entregados = pedidos.filter(
 return (
     <div style={{ padding: "20px" }}>
 
-      <h1>👨‍🍳 Cocina</h1>
+      <h1> Cocina</h1>
 
       <h2>
         Pedidos encontrados: {pedidos.length}

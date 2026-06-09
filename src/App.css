@@ -1,283 +1,252 @@
+/* =========================
+   BASE / RESET
+========================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Inter, system-ui, Arial, sans-serif;
+}
+
+body {
+  background: #f6f7fb;
+  color: #111827;
+}
+
+/* =========================
+   CONTENEDOR GENERAL
+========================= */
+
 .container {
-  max-width: 1200px;
+  max-width: 1100px;
   margin: auto;
-  padding: 20px;
+  padding: 24px;
 }
 
-.titulo {
+/* =========================
+   HEADER
+========================= */
+
+h1 {
   text-align: center;
-  margin-bottom: 30px;
-}
-
-.productos-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-}
-
-.producto-card {
-  background: white;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0px 4px 12px rgba(0,0,0,.08);
-  transition: .3s;
-}
-
-.producto-card:hover {
-  transform: translateY(-4px);
-}
-
-.producto-card h3 {
+  font-size: 28px;
+  font-weight: 700;
   margin-bottom: 10px;
 }
 
-.precio {
-  font-size: 22px;
-  font-weight: bold;
-  color: #2563eb;
+h2, h3 {
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
-.boton-agregar {
-  width: 100%;
-  margin-top: 15px;
+/* =========================
+   MENÚ PRODUCTOS
+========================= */
+
+.producto-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  transition: all 0.2s ease;
+  border: 1px solid #eef0f4;
+}
+
+.producto-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.producto-card h3 {
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+.producto-card p {
+  color: #2563eb;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* =========================
+   BOTONES
+========================= */
+
+button {
   border: none;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+button:hover {
+  transform: scale(1.03);
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+/* Botón principal */
+button.primary {
   background: #2563eb;
   color: white;
-  padding: 12px;
-  border-radius: 10px;
-}
-
-#center {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
-
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
-}
-
-#next-steps {
-  display: flex;
-  border-top: 1px solid var(--border);
-  text-align: left;
-
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
-
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-}
-
-#next-steps ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
-
-  .logo {
-    height: 18px;
-  }
-
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
-  }
-}
-
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
-}
-
-.ticks {
-  position: relative;
   width: 100%;
-
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
-  }
-
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
-  }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
-  }
+  padding: 14px;
 }
+
+/* Botón verde */
+button.success {
+  background: #22c55e;
+  color: white;
+}
+
+/* =========================
+   CARRITO
+========================= */
+
 .carrito {
   position: sticky;
   bottom: 20px;
-  margin-top: 30px;
+  margin-top: 25px;
   background: white;
   padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0px 4px 20px rgba(0,0,0,.1);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
 }
+
+.carrito ul {
+  list-style: none;
+  margin-top: 10px;
+}
+
+.carrito li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+/* controles cantidad */
+.carrito button {
+  background: #f3f4f6;
+  color: #111827;
+  padding: 6px 10px;
+}
+
+/* =========================
+   TOTAL
+========================= */
 
 .total {
-  font-size: 24px;
-  font-weight: bold;
-  color: #22c55e;
+  font-size: 22px;
+  font-weight: 800;
+  color: #16a34a;
+  margin-top: 10px;
 }
 
-.boton-enviar {
-  width: 100%;
-  border: none;
-  background: #22c55e;
-  color: white;
-  padding: 15px;
+/* =========================
+   MESA INPUT
+========================= */
+
+input {
+  padding: 10px;
   border-radius: 10px;
-  margin-top: 15px;
-  font-size: 18px;
+  border: 1px solid #e5e7eb;
+  width: 100%;
+  margin-top: 5px;
+  background: #f9fafb;
 }
+
+/* =========================
+   ESTADOS PEDIDO
+========================= */
+
 .estado {
-  padding: 10px 20px;
-  border-radius: 20px;
-  display: inline-block;
-  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 12px;
 }
 
 .recibido {
   background: #dbeafe;
-  color: #2563eb;
+  color: #1d4ed8;
 }
 
 .preparacion {
   background: #fef3c7;
-  color: #d97706;
+  color: #b45309;
 }
 
 .listo {
   background: #dcfce7;
-  color: #16a34a;
+  color: #15803d;
 }
 
 .entregado {
   background: #e5e7eb;
-  color: #4b5563;
+  color: #374151;
 }
+
+/* =========================
+   KANBAN COCINA
+========================= */
+
 .kanban {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: 16px;
   margin-top: 20px;
 }
 
 .columna {
-  background: #f1f5f9;
+  background: #f9fafb;
   border-radius: 16px;
-  padding: 15px;
-  min-height: 500px;
+  padding: 14px;
+  min-height: 400px;
+  border: 1px solid #e5e7eb;
 }
 
 .columna h2 {
   text-align: center;
-  margin-bottom: 15px;
+  font-size: 16px;
 }
 
+/* tarjetas pedidos */
 .pedido-card {
   background: white;
   border-radius: 12px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 10px rgba(0,0,0,.08);
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
 .pedido-card h3 {
-  margin-bottom: 10px;
+  font-size: 14px;
+  margin-bottom: 6px;
 }
 
 .pedido-card ul {
-  margin-top: 10px;
-  padding-left: 20px;
+  padding-left: 16px;
+  margin-top: 8px;
 }
 
-.boton-estado {
-  width: 100%;
-  margin-top: 15px;
-  border: none;
-  padding: 10px;
-  border-radius: 8px;
-  background: #2563eb;
-  color: white;
-  font-weight: bold;
-}
-@media (max-width: 1200px) {
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
   .kanban {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .kanban {
     grid-template-columns: 1fr;
   }
