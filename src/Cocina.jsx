@@ -31,17 +31,17 @@ function Cocina() {
     const canal = supabase
       .channel("pedidos-realtime")
       .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "pedidos"
-        },
-        () => {
-          cargarPedidos();
-        }
-      )
-      .subscribe();
+  "postgres_changes",
+  {
+    event: "*",
+    schema: "public",
+    table: "pedidos"
+  },
+  (payload) => {
+    console.log("CAMBIO:", payload);
+    cargarPedidos();
+  }
+)
 
     return () => {
       supabase.removeChannel(canal);
