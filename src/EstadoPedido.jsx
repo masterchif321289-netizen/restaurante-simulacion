@@ -114,21 +114,18 @@ function EstadoPedido() {
       <h2>🍳 Estado del Pedido</h2>
 
       <p
-        style={{
-          color:
-            pedido.estado === "Entregado"
-              ? "gray"
-              : pedido.estado === "Listo"
-              ? "green"
-              : pedido.estado === "En preparación"
-              ? "orange"
-              : "blue",
-          fontWeight: "bold",
-          fontSize: "24px"
-        }}
-      >
-        {pedido.estado}
-      </p>
+  className={`estado ${
+    pedido.estado === "Recibido"
+      ? "recibido"
+      : pedido.estado === "En preparación"
+      ? "preparacion"
+      : pedido.estado === "Listo"
+      ? "listo"
+      : "entregado"
+  }`}
+>
+  {pedido.estado}
+</p>
 
       <hr />
 

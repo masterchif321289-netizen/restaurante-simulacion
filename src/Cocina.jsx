@@ -6,7 +6,17 @@ function Cocina() {
   const [pedidos, setPedidos] = useState([]);
 
   const cargarPedidos = async () => {
+const recibidos = pedidos.filter(
+  (pedido) => pedido.estado === "Recibido"
+);
 
+const preparacion = pedidos.filter(
+  (pedido) => pedido.estado === "En preparación"
+);
+
+const listos = pedidos.filter(
+  (pedido) => pedido.estado === "Listo"
+);
     const { data, error } = await supabase
       .from("pedidos")
       .select("*")
@@ -117,71 +127,130 @@ function Cocina() {
         Pedidos encontrados: {pedidos.length}
       </h2>
 
-      {pedidos.length === 0 ? (
+      <div className="kanban">
 
-        <h3>No hay pedidos</h3>
+  <div className="columna">
 
-      ) : (
+    <h2>🔵 Recibidos</h2>
 
-        pedidos.map((pedido) => (
+    {recibidos.map((pedido) => (
 
-          <div
-            key={pedido.id}
-            style={{
-              border: "1px solid gray",
-              padding: "15px",
-              marginBottom: "15px",
-              borderRadius: "10px"
-            }}
-          >
+      <div
+        key={pedido.id}
+        className="pedido-card"
+      >
 
-            <h3>
-              Pedido #{pedido.id}
-            </h3>
+        <h3>Pedido #{pedido.id}</h3>
 
-            <p>
-              Mesa: {pedido.mesa}
-            </p>
+        <p>Mesa {pedido.mesa}</p>
 
-            <p>
-              Estado: {pedido.estado}
-            </p>
+        <ul>
+          {(pedido.productos || []).map(
+            (producto, index) => (
+              <li key={index}>
+                {producto.nombre}
+              </li>
+            )
+          )}
+        </ul>
 
-            <h4>Productos:</h4>
+        <button
+          className="boton-estado"
+          onClick={() =>
+            actualizarEstado(pedido)
+          }
+        >
+          Preparar
+        </button>
 
-            <ul>
-              {(pedido.productos || []).map(
-                (producto, index) => (
-                  <li key={index}>
-                    {producto.nombre}
-                  </li>
-                )
-              )}
-            </ul>
+      </div>
 
-            {pedido.estado !== "Entregado" && (
+    ))}
 
-              <button
-                onClick={() =>
-                  actualizarEstado(pedido)
-                }
-              >
-                {pedido.estado === "Recibido"
-                  ? "Preparar"
-                  : pedido.estado === "En preparación"
-                  ? "Marcar Listo"
-                  : "Entregar"}
-              </button>
+  </div>
 
-            )}
+  <div className="columna">
 
+    <h2>🟠 En preparación</h2>
+
+    {preparacion.map((pedido) => (
+
+      <div
+        key={pedido.id}
+        className="pedido-card"
+      >
+
+        <h3>Pedido #{pedido.id}</h3>
+
+        <p>Mesa {pedido.mesa}</p>
+
+        <ul>
+          {(pedido.productos || []).map(
+            (producto, index) => (
+              <li key={index}>
+                {producto.nombre}
+              </li>
+            )
+          )}
+        </ul>
+
+        <button
+          className="boton-estado"
+          onClick={() =>
+            actualizarEstado(pedido)
+          }
+        >
+          Marcar listo
+        </button>
+
+      </div>
+
+    ))}
+
+  </div>
+
+  <div className="columna">
+
+    <h2>🟢 Listos</h2>
+
+    {listos.map((pedido) => (
+
+      <div
+        key={pedido.id}
+        className="pedido-card"
+      >
+
+        <h3>Pedido #{pedido.id}</h3>
+
+        <p>Mesa {pedido.mesa}</p>
+
+        <ul>
+          {(pedido.productos || []).map(
+            (producto, index) => (
+              <li key={index}>
+                {producto.nombre}
+              </li>
+            )
+          )}
+        </ul>
+
+        <button
+          className="boton-estado"
+          onClick={() =>
+            actualizarEstado(pedido)
+          }
+        >
+          Entregar
+        </button>
+
+      </div>
+
+    ))}
+
+  </div>
+
+</div>
           </div>
-
-        ))
-
-      )}
-
-    </div>
   );
 }
 
