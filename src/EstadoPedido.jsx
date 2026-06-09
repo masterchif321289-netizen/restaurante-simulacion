@@ -10,6 +10,8 @@ function EstadoPedido() {
     const pedidoId =
       localStorage.getItem("pedidoActual");
 
+    console.log("PEDIDO ACTUAL:", pedidoId);
+
     if (!pedidoId) {
       return;
     }
@@ -17,16 +19,17 @@ function EstadoPedido() {
     const cargarPedido = async () => {
 
       const { data, error } = await supabase
-  .from("pedidos")
-  .update({
-    estado: nuevoEstado
-  })
-  .eq("id", pedido.id);
+        .from("pedidos")
+        .select("*")
+        .eq("id", pedidoId)
+        .single();
 
       if (error) {
         console.error(error);
         return;
       }
+
+      console.log("PEDIDO CARGADO:", data);
 
       setPedido(data);
 

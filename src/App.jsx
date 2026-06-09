@@ -206,57 +206,49 @@ function App() {
       </p>
 
       <button
-        onClick={async () => {
+  onClick={async () => {
 
-          if (carrito.length === 0) {
+    alert("1");
 
-            alert(
-              "Agrega al menos un producto"
-            );
-
-            return;
+    const { data, error } =
+      await supabase
+        .from("pedidos")
+        .insert([
+          {
+            mesa: mesa,
+            productos: carrito,
+            estado: "Recibido"
           }
+        ])
+        .select();
 
-          const { data, error } =
-            await supabase
-              .from("pedidos")
-              .insert([
-                {
-                  mesa: mesa,
-                  productos: carrito,
-                  estado: "Recibido"
-                }
-              ])
-              .select();
+    alert("2");
 
-          if (error) {
+    console.log(data);
+    console.log(error);
 
-            console.error(error);
+    if (error) {
+      alert("ERROR");
+      return;
+    }
 
-            alert(error.message);
+    alert("3");
 
-            return;
-          }
+    const pedidoCreado = data[0];
 
-          const pedidoCreado = data[0];
+    localStorage.setItem(
+      "pedidoActual",
+      pedidoCreado.id
+    );
 
-          localStorage.setItem(
-            "pedidoActual",
-            pedidoCreado.id
-          );
+    alert("4");
 
-          alert(
-            "Pedido enviado correctamente"
-          );
+    window.location.href = "/pedido";
 
-          setCarrito([]);
-
-          window.location.href = "/pedido";
-
-        }}
-      >
-        Enviar Pedido
-      </button>
+  }}
+>
+  Enviar Pedido
+</button>
 
     </div>
   );
