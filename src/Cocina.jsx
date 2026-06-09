@@ -13,7 +13,10 @@ function Cocina() {
       .order("id", { ascending: false });
 
     console.log("DATA:", data);
-    console.log("ERROR:", error);
+    console.log(
+  "ERROR:",
+  JSON.stringify(error, null, 2)
+);
 
     if (error) {
       console.error(error);
