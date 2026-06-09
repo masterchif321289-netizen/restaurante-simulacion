@@ -1,38 +1,23 @@
 import { useEffect, useState } from "react";
 import supabase from "./supabase";
+import "./App.css";
 
 function EstadoPedido() {
-
   const [pedido, setPedido] = useState(null);
 
   useEffect(() => {
+    const pedidoId = localStorage.getItem("pedidoActual");
 
-    const pedidoId =
-      localStorage.getItem("pedidoActual");
-
-    console.log("PEDIDO ACTUAL:", pedidoId);
-
-    if (!pedidoId) {
-      return;
-    }
+    if (!pedidoId) return;
 
     const cargarPedido = async () => {
-
       const { data, error } = await supabase
         .from("pedidos")
         .select("*")
         .eq("id", pedidoId)
         .single();
 
-      if (error) {
-        console.error(error);
-        return;
-      }
-
-      console.log("PEDIDO CARGADO:", data);
-
-      setPedido(data);
-
+      if (!error) setPedido(data);
     };
 
     cargarPedido();
@@ -47,14 +32,9 @@ function EstadoPedido() {
           table: "pedidos"
         },
         (payload) => {
-
-          if (
-            payload.new &&
-            payload.new.id === Number(pedidoId)
-          ) {
+          if (payload.new && payload.new.id === Number(pedidoId)) {
             setPedido(payload.new);
           }
-
         }
       )
       .subscribe();
@@ -62,99 +42,89 @@ function EstadoPedido() {
     return () => {
       supabase.removeChannel(canal);
     };
-
   }, []);
 
   if (!pedido) {
-    return <h2>No hay pedidos activos</h2>;
+    return (
+      <div className="container">
+        <h1>🍽 Estado del Pedido</h1>
+
+        <div className="card">
+          <h2>No hay pedidos activos</h2>
+          <p>Escanea un QR y realiza un pedido para verlo aquí.</p>
+        </div>
+      </div>
+    );
   }
 
   const agruparProductos = (productos) => {
-
     const agrupados = {};
 
-    (productos || []).forEach((producto) => {
-
-      if (agrupados[producto.nombre]) {
-
-        agrupados[producto.nombre].cantidad++;
-
+    (productos || []).forEach((p) => {
+      if (agrupados[p.nombre]) {
+        agrupados[p.nombre].cantidad++;
       } else {
-
-        agrupados[producto.nombre] = {
-          ...producto,
-          cantidad: 1
-        };
-
+        agrupados[p.nombre] = { ...p, cantidad: 1 };
       }
-
     });
 
     return Object.values(agrupados);
-
   };
 
   const total = (pedido.productos || []).reduce(
-    (sum, producto) =>
-      sum + Number(producto.precio || 0),
+    (sum, p) => sum + Number(p.precio || 0),
     0
   );
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div className="container">
 
-      <h1>
-        Pedido #{pedido.id}
-      </h1>
+      {/* HEADER */}
+      <h1>🧾 Pedido #{pedido.id}</h1>
 
-      <h3>
-       Mesa {pedido.mesa}
-      </h3>
+      <div className="card">
+        <h3>Mesa</h3>
+        <span className="estado recibido">{pedido.mesa}</span>
+      </div>
 
-      <h2> Estado del Pedido</h2>
+      {/* ESTADO */}
+      <h2>Estado del pedido</h2>
 
-      <p
-  className={`estado ${
-    pedido.estado === "Recibido"
-      ? "recibido"
-      : pedido.estado === "En preparación"
-      ? "preparacion"
-      : pedido.estado === "Listo"
-      ? "listo"
-      : "entregado"
-  }`}
->
-  {pedido.estado}
-</p>
+      <div className="card">
+        <p
+          className={`estado ${
+            pedido.estado === "Recibido"
+              ? "recibido"
+              : pedido.estado === "En preparación"
+              ? "preparacion"
+              : pedido.estado === "Listo"
+              ? "listo"
+              : "entregado"
+          }`}
+        >
+          {pedido.estado}
+        </p>
+      </div>
 
-      <hr />
+      {/* PRODUCTOS */}
+      <h2>Productos</h2>
 
-      <h2> Productos</h2>
+      <div className="card">
+        <ul>
+          {agruparProductos(pedido.productos).map((producto, index) => (
+            <li key={`${producto.nombre}-${index}`}>
+              <strong>{producto.cantidad}x</strong> {producto.nombre}
+            </li>
+          ))}
+        </ul>
+      </div>
 
-      <ul>
-        {agruparProductos(
-          pedido.productos
-        ).map((producto, index) => (
-          <li
-            key={`${producto.nombre}-${index}`}
-          >
-            {producto.cantidad}x {producto.nombre}
-          </li>
-        ))}
-      </ul>
+      {/* TOTAL */}
+      <h2>Total</h2>
 
-      <hr />
-
-      <h2> Total</h2>
-
-      <p
-        style={{
-          fontSize: "22px",
-          fontWeight: "bold"
-        }}
-      >
-        ${total}
-      </p>
+      <div className="card">
+        <h2 className="total">${total}</h2>
+      </div>
 
     </div>
   );
